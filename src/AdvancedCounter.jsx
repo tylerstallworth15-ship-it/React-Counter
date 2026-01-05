@@ -1,25 +1,65 @@
-import { useState }  from "react";
+import { useState, useEffect } from "react";
 
 export default function AdvancedCounter() {
   const [count, setCount] = useState(0);
+  const [history, setHistory] = useState([0]);
+  const [saveStatus, setSaveStatus] = useState("");
 
-const handleIncrememnt = () => {
-  setCount(prev => prev + 1);
-};
+  const handleIncrement = () => {
+    setCount(prev => prev + 1);
+  };
 
-const handleDecrememnt = () => {
-  setCount(prev => prev - 1);
-};
+  const handleDecrement = () => {
+    setCount(prev => prev - 1);
+  };
 
-return (
+  useEffect(() => {
+    setHistory(prevHistory => [ ...prevHistory, count]);
+  }, [count]); 
+
+  useEffect(() => {
+    setSaveStatus("Saving...");
+
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem("advanced-counter-count", String(count));
+      setSaveStatus("Changes saved.");
+    }, 500);
+
+    useEffect(() => {
+      const handleKeyDown = (event) => {
+        if (event.key == "ArrowUp") {
+          setCount(prev => prev + 1);
+        } else if (event.key == "ArrowDown") {
+          setCount(prev => prev -1);
+        }
+      };
+       
+      document.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, []);
+
+    <p> Use ArrowUp to increment and ArrowDown to decrement.</p>
+
+    return () => {
+        clearTimeout(timeoutId);
+    };
+  }, [count]);
+  
+
+  return (
     <div>
       <h1>Advanced Counter</h1>
       <p>Current Count: {count}</p>
 
-      <button onClick={handleDecrement}><Decrement></Decrement></button>
-      <button onClick={handleIncrement}><Increment></Increment></button>
-      
+      <button onClick={handleIncrement}>Increment</button>
+      <button onClick={handleDecrement}>Decrement</button>
+
+      <p>{saveStatus}</p>
     </div>
   );
 }  
+
 
