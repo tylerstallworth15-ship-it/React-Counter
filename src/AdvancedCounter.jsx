@@ -25,7 +25,12 @@ export default function AdvancedCounter() {
       setSaveStatus("Changes saved.");
     }, 500);
 
-    useEffect(() => {
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [count]);
+
+  useEffect(() => {
       const handleKeyDown = (event) => {
         if (event.key == "ArrowUp") {
           setCount(prev => prev + 1);
@@ -41,25 +46,23 @@ export default function AdvancedCounter() {
       };
     }, []);
 
-    <p> Use ArrowUp to increment and ArrowDown to decrement.</p>
+    return (
+      <div>
+        <h1>Advanced Counter</h1>
 
-    return () => {
-        clearTimeout(timeoutId);
-    };
-  }, [count]);
-  
+        <p>Current Count: {count}</p>
 
-  return (
-    <div>
-      <h1>Advanced Counter</h1>
-      <p>Current Count: {count}</p>
+        <button onClick={handleIncrement}>Increment</button>
+        <button onClick={handleDecrement}>Decrement</button>
 
-      <button onClick={handleIncrement}>Increment</button>
-      <button onClick={handleDecrement}>Decrement</button>
+        <p>{saveStatus}</p>
 
-      <p>{saveStatus}</p>
-    </div>
-  );
-}  
+        <h2>Count History:</h2>
+        <p>{history.join(",")}</p>
+
+        <p> Use ArrowUp to increment and ArrowDown to decrement.</p>
+      </div>
+    );
+  }  
 
 
