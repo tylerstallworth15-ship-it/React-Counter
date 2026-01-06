@@ -21,6 +21,13 @@ export default function AdvancedCounter() {
   };
 
   useEffect(() => {
+    const saved = localStorage.getItem("advanced-counter-count");
+    if (saved !== null) {
+      setCount(Number(saved));
+    }
+  }, []);
+
+  useEffect(() => {
     setHistory(prev => {
       if (prev[prev.length - 1] !== count) {
         return [... prev.slice(-49), count];
